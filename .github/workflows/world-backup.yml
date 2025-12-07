@@ -15,13 +15,12 @@ jobs:
       - name: Zip world folder
         run: |
           mkdir -p backups
-          zip -r backups/world-$(date +'%Y-%m-%d_%H-%M-%S').zip .
+          zip -r backups/world-$(date +'%Y-%m-%d_%H-%M-%S').zip . -x ".github/*"
 
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: backup-$(date +'%Y-%m-%d_%H-%M-%S')
-          name: "Auto Backup $(date +'%Y-%m-%d %H:%M')"
-          files: backups/*.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit and push backup
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git add backups/*.zip
+          git commit -m "Auto backup $(date +'%Y-%m-%d_%H-%M-%S')" || echo "No changes to commit"
+          git push
