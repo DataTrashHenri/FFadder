@@ -1,0 +1,27 @@
+name: Backup Minecraft World
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Zip world folder
+        run: |
+          mkdir -p backups
+          zip -r backups/world-$(date +'%Y-%m-%d_%H-%M-%S').zip .
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: backup-$(date +'%Y-%m-%d_%H-%M-%S')
+          name: "Auto Backup $(date +'%Y-%m-%d %H:%M')"
+          files: backups/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
