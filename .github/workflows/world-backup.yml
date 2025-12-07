@@ -18,10 +18,13 @@ jobs:
           zip -r backups/world-$(date +'%Y-%m-%d_%H-%M-%S').zip . -x ".github/*"
 
       - name: Commit and push backup
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
         run: |
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
+          # Set remote to use PAT for authentication
+          git remote set-url origin https://x-access-token:${GH_PAT}@github.com/${GITHUB_REPOSITORY}.git
           git add -f backups/*.zip
           git commit -m "Auto backup $(date +'%Y-%m-%d_%H-%M-%S')" || echo "No changes to commit"
-          git push
-
+          git push origin main
