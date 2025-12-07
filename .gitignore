@@ -1,0 +1,14 @@
+# Minecraft world temp files
+session.lock
+*.tmp
+
+# Java edition logs (if included)
+logs/
+crash-reports/
+
+# Minecraft auto-saves can create temp folders
+*.dat_old
+*.bak
+
+# GitHub Actions backup folder
+backups/
